@@ -21,7 +21,7 @@ function renderBooks(){
 function listBooks(element){
     const list = document.getElementById("list")
     const li = document.createElement("li")
-    li.id = `Title ${element.id}`
+    li.id = `${element.id}`
     li.innerText = element.title
     list.append(li)
     li.addEventListener("click", () => panelBook(element))
@@ -51,10 +51,30 @@ function panelBook(elementList){
         panelDescription.innerText = elementList.description
         showPanel.append(panelDescription)
     elementList.users.forEach(x => {
-        console.log(x)
         const panelUsers = document.createElement("li")
         panelUsers.id = `User Like ${x.id}`
         panelUsers.innerText = x.username
         showPanel.append(panelUsers)
     })
+    createButton(showPanel, elementList)
 }
+
+function createButton(parent, element){
+    const button = document.createElement("button")
+    button.innerText = "Like"
+    parent.append(button)
+    button.addEventListener("click", buttonFetch(element))
+}
+
+function buttonFetch(e){
+    fetch(`http://localhost:3000/books/${e.id}`, {
+            method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+    }
