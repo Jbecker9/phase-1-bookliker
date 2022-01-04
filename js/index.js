@@ -50,12 +50,16 @@ function panelBook(elementList){
         panelDescription.id = `Panel Description ${elementList.id}`
         panelDescription.innerText = elementList.description
         showPanel.append(panelDescription)
+    const ulUsers = document.createElement("ul")
+    ulUsers.id = "ulUsers"
+    showPanel.append(ulUsers)
     elementList.users.forEach(x => {
         const panelUsers = document.createElement("li")
         panelUsers.id = `User Like ${x.id}`
         panelUsers.innerText = x.username
-        showPanel.append(panelUsers)
+        ulUsers.append(panelUsers)
     })
+    
     createButton(showPanel, elementList)
 }
 
@@ -63,7 +67,7 @@ function createButton(parent, element){
     const button = document.createElement("button")
     button.innerText = "Like"
     parent.append(button)
-    button.addEventListener("click", buttonFetch(element))
+    button.addEventListener("click", () => buttonFetch(element))
 }
 
 function buttonFetch(e){
@@ -73,8 +77,11 @@ function buttonFetch(e){
           "Content-Type": "application/json",
           Accept: "application/json"
         },
-        
+        body:JSON.stringify({users:[...e.users,{
+            "id": 3,
+            "username": "marvin"
+          }]})
         })
         .then(response => response.json())
-        .then(data => console.log(data))
+        .then(data => panelBook(data))
     }
